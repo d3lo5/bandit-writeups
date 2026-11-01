@@ -1,5 +1,4 @@
-# bandit-writeups
-Public log of my OverTheWire Bandit progress: learning Linux from absolute zero, mistakes included.
+
 # Bandit Write-ups: Learning Linux From Absolute Zero
 
 A public log of my progress on [OverTheWire Bandit](https://overthewire.org/wargames/bandit/),
