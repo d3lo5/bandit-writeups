@@ -102,7 +102,7 @@ They do different things: `file` tells you what a file is, `cat` prints what is 
 - Files starting with `.` are hidden; `ls` won't show them without `-a`.
 - `/` (root), `./` (here) and a bare name are three different paths.
 - `file` identifies, `cat` reads.
-
+- The wildcard `*` does not match hidden files, so `file ./*` skipped `.file2` entirely.
 ---
 
 ## Mistake log
