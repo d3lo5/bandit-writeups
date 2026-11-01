@@ -20,12 +20,12 @@ levels. I'm currently on chapter 4.
 
 ## Rules I follow
 
-- **No passwords or flags.** If you want to learn from Bandit, solve it yourself.
+- **No passwords or flags.** Level solutions are described for learning purposes, so spoilers ahead.
 - **Honesty about help.** I use AI as a guide, not as an answer machine. I ask it to
   point me in a direction (for example, "which command compares file types?") rather than
   to give me the solution, because I'm not yet familiar with the commands.
   Each write-up states how much help I got.
-
+  
 ## Progress
 
 | Level | Key concept | Key command | Help received |
