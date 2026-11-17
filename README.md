@@ -426,6 +426,10 @@ I'm gradually moving beyond simply learning individual Linux commands and starti
 | 9→10  | `strings -excecutable`                   | Invented, misspelled option                           |
 | 9→10  | `grep = data.txt`                        | Searching a binary file with `grep` directly          |
 | 9→10  | `strings -n = blob.bin`                  | Pattern in a numeric option; filename not checked     |
+| 11→12 | `tr a-z A-Z \| data.txt`                          | Piping into a file (pipe vs redirect; repeat of 8→9 confusion) |
+| 11→12 | `echo data.txt \| tr 'a-z' 'A-Z'`                 | Confusing a filename with file contents |
+| 11→12 | `cat DATA.TXT`                                    | Case sensitivity (side effect of the previous command) |
+| 11→12 | `tr a-z A-Z < data.txt` before rotating           | Lossy transformation before decoding (logic error) |
 
 *I'll keep adding rows. The goal is for this table to show fewer and more advanced errors over time.*
 
@@ -434,3 +438,63 @@ I'm gradually moving beyond simply learning individual Linux commands and starti
 - Bandit to level 15.
 - Shotts chapters 6 to 10, with a short summary of each in this repo.
 - The "Help received" column states exactly what help I got on each level, including AI.
+
+
+  ## Level 10 → 11
+
+**Goal:** the password is in `data.txt`, which contains Base64-encoded data. ([Level page](https://overthewire.org/wargames/bandit/bandit11.html))
+
+**What I tried and why it failed:**
+
+Nothing failed. This is the first level with no logged mistakes. I listed the directory to find the file, then used the tool I had read about in my reference guide, with its decode option, on the file. One command, correct on the first try.
+
+**What happened, in my own words:**
+
+Reading the reference guide before the level paid off. I knew which tool to use and roughly how it worked, so the level was straightforward.
+
+**Concepts I learned:**
+
+Base64 is an encoding, not encryption. There is no key, and anyone can reverse it.
+
+It shows up on the web in HTTP Basic Auth headers, JWTs and cookies, so I expect to see it again.
+
+**Help received:** reference guide only (AI-generated). No hints on the solution.
+
+---
+
+## Level 11 → 12
+
+**Goal:** the password is in `data.txt`, where all lowercase and uppercase letters have been rotated by 13 positions (ROT13). ([Level page](https://overthewire.org/wargames/bandit/bandit12.html))
+
+**What I tried and why it failed:**
+
+| What I typed | Why it failed |
+| ------------ | ------------- |
+| `tr a-z A-Z \| data.txt` | The pipe sent `tr`'s output to a *command* named `data.txt`: "command not found". A pipe connects a command to another command, not to a file. Same pipe confusion I noted in 8 → 9 |
+| `echo data.txt \| tr 'a-z' 'A-Z'` | `echo` printed the word "data.txt", not the file's contents, so `tr` uppercased the filename |
+| `cat DATA.TXT` | No such file. Linux is case-sensitive, and the file never changed: I had only transformed a string |
+| `tr a-z A-Z < data.txt`, then rotating the output | Right input, wrong transformation. Uppercasing throws away the case of every letter and can't be undone. Bandit passwords are mixed-case, so my result looked plausible but was wrong |
+
+**What happened, in my own words:**
+
+My first attempts failed on syntax, so I went back to the book and read the `tr` section. That's where I found the ROT13 explanation. I'm only on Chapter 6, so this was reading ahead to Chapter 20.
+
+When the output turned into readable English I assumed I had solved it. I never tested it on the server. I asked AI for feedback, and it pointed out the password couldn't be right because I had uppercased everything before rotating. I tested it and it was rejected.
+
+This was my first logic error rather than a syntax error. The commands ran fine. My plan was the problem.
+
+**Concepts I learned:**
+
+`tr` reads only standard input, never filenames. A file has to be fed in with `<`.
+
+`tr` maps the first set to the second set, position by position.
+
+`|` connects commands and `<` / `>` connect files (Shotts, Chapter 6).
+
+Never alter data before the decoding step you actually need.
+
+ROT13 is obfuscation, not encryption.
+
+Test the result before concluding.
+
+**Help received:** reference guide and Shotts (Chapter 20, ROT13 sidebar) for the idea. After my first password failed, AI diagnosed the cause (case lost by uppercasing) and showed me the corrected command, which I then ran myself.
